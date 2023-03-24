@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.app {
+	min-height: 100vh;
+	background-color: #101618;
+	/*@apply bg-neutral-900;*/
+	@apply text-gray-50;
+	@apply p-32;
+}
+
+
