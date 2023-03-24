@@ -1,30 +1,9 @@
-# Как это использовать?
-
-Ниже представлен пример, где мы меняем ширину элемента по изменению значения поля ввода.
-Код написан на vue, но все что важно знать, это то, что по изменению значения ползунка
-вызывается функция `onWidthInput`
-
-## Примеры
-
-### Без анимации
-
-::RequestAnimationFrameExampleWithoutAnimation
-::
-
-### С анимацией
-
-::RequestAnimationFrameExample
-::
-
-<details>
-<summary> Код </summary>
-
-```vue
 <script setup>
 const INITIAL_WIDTH = 100;
 
 const width = ref(INITIAL_WIDTH);
 const duration = ref(900);
+const maxFps = ref(30);
 const element = ref();
 const animationId = ref();
 
@@ -37,28 +16,35 @@ const cancelAnimation = () => {
 	}
 };
 
-const updateWidth = (element, nextWidth, duration = 5000) => {
+const updateWidth = (element, nextWidth, duration, maxFps) => {
 	cancelAnimation();
 
-	const previousWidth = Number.parseInt(element.style.width) || INITIAL_WIDTH;
-	const diff = nextWidth - previousWidth;
+	const previousWidth = Number.parseFloat(element.style.width) || INITIAL_WIDTH;
+	const widthDifference = nextWidth - previousWidth;
+	const frameDuration = 1000 / maxFps;
 
-	let start;
+	let startTime;
+	let lastFrameTime = Date.now();
 
 	function step(timestamp) {
-		window.cancelAnimationFrame(animationId.value);
-
-		if (!start) {
-			start = timestamp;
+		if (!startTime) {
+			startTime = timestamp;
 		}
-		const timePassed = Math.round(timestamp - start);
-		const progress = Math.min(timePassed / duration, 1); // [0, 1]
 
-		const currentWidth = previousWidth + Math.floor(easing(progress) * diff);
+		const currentTime = Date.now();
+		const deltaTime = currentTime - lastFrameTime;
 
-		element.style.width = `${currentWidth}px`;
+		const timePassed = Math.round(timestamp - startTime);
+		const progress = Math.min(timePassed / duration, 1);
 
-		if (progress < duration) {
+		if (deltaTime > frameDuration || progress === 1) {
+			lastFrameTime = currentTime - (deltaTime % frameDuration);
+
+			const currentWidth = previousWidth + Math.floor(easing(progress) * widthDifference);
+			element.style.width = `${currentWidth}px`;
+		}
+
+		if (progress < 1) {
 			animationId.value = window.requestAnimationFrame(step);
 		} else {
 			cancelAnimation();
@@ -69,7 +55,7 @@ const updateWidth = (element, nextWidth, duration = 5000) => {
 };
 
 const onWidthInput = () => {
-	updateWidth(element.value, width.value, duration.value);
+	updateWidth(element.value, width.value, duration.value, maxFps.value);
 };
 </script>
 
@@ -108,6 +94,22 @@ const onWidthInput = () => {
 			/>
 		</div>
 
+		<div class="flex flex-col">
+			<label
+				class="text-lg"
+				for="max-fps-input"
+			>
+				Max fps: {{ maxFps }}
+			</label>
+			<input
+				id="duration-input"
+				type="range"
+				min="2"
+				max="60"
+				v-model.number="maxFps"
+			/>
+		</div>
+
 		<button
 			class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
 			@click="cancelAnimation"
@@ -134,6 +136,3 @@ input {
 	@apply bg-emerald-600 rounded-full;
 }
 </style>
-```
-
-</details>

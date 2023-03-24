@@ -8,10 +8,6 @@ const dir = router.currentRoute.fullPath.replace(router.currentRoute.params.slug
 
 currentPresentationData.value = await queryContent(dir).find();
 
-console.log(currentPresentationData);
-
-
-
 const slideIndex = computed(() => Number(router.currentRoute.params.slug));
 const maxSlideIndex = computed(() => currentPresentationData?.value.length);
 
@@ -22,7 +18,10 @@ const nextSlideRoute = computed(() => `./${Math.min(slideIndex.value + 1, maxSli
 <template>
 	<div class="app app--default">
 		<nav class="navigation">
-			<menu class="flex" v-if="maxSlideIndex">
+			<menu
+				class="flex"
+				v-if="maxSlideIndex"
+			>
 				<li>
 					<NuxtLink
 						class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-bl"

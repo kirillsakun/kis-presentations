@@ -25,6 +25,18 @@
 	@apply font-bold text-xl mb-2 mt-4;
 }
 
+:deep(h2 a) {
+	color: inherit;
+}
+
+:deep(h3 a) {
+	color: inherit;
+}
+
+:deep(a) {
+	@apply text-emerald-500;
+}
+
 :deep(blockquote) {
 	@apply rounded-r-md py-4 px-6 my-6 border-l-4;
 	background-color: #263238;

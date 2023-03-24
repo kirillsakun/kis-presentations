@@ -1,25 +1,3 @@
-# Как это использовать?
-
-Ниже представлен пример, где мы меняем ширину элемента по изменению значения поля ввода.
-Код написан на vue, но все что важно знать, это то, что по изменению значения ползунка
-вызывается функция `onWidthInput`
-
-## Примеры
-
-### Без анимации
-
-::RequestAnimationFrameExampleWithoutAnimation
-::
-
-### С анимацией
-
-::RequestAnimationFrameExample
-::
-
-<details>
-<summary> Код </summary>
-
-```vue
 <script setup>
 const INITIAL_WIDTH = 100;
 
@@ -37,28 +15,25 @@ const cancelAnimation = () => {
 	}
 };
 
-const updateWidth = (element, nextWidth, duration = 5000) => {
+const updateWidth = (element, nextWidth, duration) => {
 	cancelAnimation();
 
-	const previousWidth = Number.parseInt(element.style.width) || INITIAL_WIDTH;
-	const diff = nextWidth - previousWidth;
+	const previousWidth = Number.parseFloat(element.style.width) || INITIAL_WIDTH;
+	const widthDifference = nextWidth - previousWidth;
 
-	let start;
+	let startTime;
 
 	function step(timestamp) {
-		window.cancelAnimationFrame(animationId.value);
-
-		if (!start) {
-			start = timestamp;
+		if (!startTime) {
+			startTime = timestamp;
 		}
-		const timePassed = Math.round(timestamp - start);
-		const progress = Math.min(timePassed / duration, 1); // [0, 1]
+		const timePassed = Math.round(timestamp - startTime);
+		const progress = Math.min(timePassed / duration, 1);
 
-		const currentWidth = previousWidth + Math.floor(easing(progress) * diff);
-
+		const currentWidth = previousWidth + Math.floor(easing(progress) * widthDifference);
 		element.style.width = `${currentWidth}px`;
 
-		if (progress < duration) {
+		if (progress < 1) {
 			animationId.value = window.requestAnimationFrame(step);
 		} else {
 			cancelAnimation();
@@ -134,6 +109,3 @@ input {
 	@apply bg-emerald-600 rounded-full;
 }
 </style>
-```
-
-</details>
