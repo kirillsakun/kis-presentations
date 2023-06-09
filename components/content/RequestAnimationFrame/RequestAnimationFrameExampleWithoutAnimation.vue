@@ -1,6 +1,5 @@
 <script setup>
 const width = ref(400);
-
 </script>
 
 <template>
@@ -14,17 +13,17 @@ const width = ref(400);
 			</label>
 			<input
 				id="width-input"
+				v-model.number="width"
 				type="range"
 				min="100"
 				max="800"
-				v-model.number="width"
 			/>
 		</div>
 	</div>
 
 	<div
 		class="example"
-		:style="{width: `${width}px`}"
+		:style="{ width: `${width}px` }"
 	></div>
 </template>
 

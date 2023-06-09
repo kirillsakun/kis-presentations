@@ -59,10 +59,10 @@ const onWidthInput = () => {
 			</label>
 			<input
 				id="width-input"
+				v-model.number="width"
 				type="range"
 				min="100"
 				max="800"
-				v-model.number="width"
 				@input="onWidthInput"
 			/>
 		</div>
@@ -76,10 +76,10 @@ const onWidthInput = () => {
 			</label>
 			<input
 				id="duration-input"
+				v-model.number="duration"
 				type="range"
 				min="100"
 				max="5000"
-				v-model.number="duration"
 			/>
 		</div>
 
@@ -92,8 +92,8 @@ const onWidthInput = () => {
 	</div>
 
 	<div
-		class="example"
 		ref="element"
+		class="example"
 	></div>
 </template>
 
